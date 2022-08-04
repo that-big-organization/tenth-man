@@ -63,7 +63,23 @@ module.exports = {
     ],
     lobby: [
         (body, conversation, user) => {
-            const message = require("../controllers/validate")(body.Body)
+            let message
+            const tryNum = parseInt(message)
+            if (!isNaN(tryNum))
+                message = tryNum
+            else {
+                message = message.toLowerCase()
+                switch (message) {
+                    case "exit":
+                    case "distance":
+                    case "notifications":
+                        break;
+                    default:
+                        message = null;
+                }
+            }
+
+
             if (!message) return new Response("oops didnt quite get that", conversation, user)
             if (typeof message === "string") {
                 conversation.stage = message
