@@ -81,8 +81,7 @@ module.exports = {
         conversation.sessionInfo.distanceType = number
         return new Response(`How many ${number == 1 ? "miles" : "kilometers"} would you likee to set as you limit distance`)
 
-    },
-    (body, conversation, user) => {
+    }, (body, conversation, user) => {
         const distance = parseInt(body)
         if (isNaN(distance))
             return new Response("Please give a valid number as a distance.", conversation, user)
@@ -91,5 +90,12 @@ module.exports = {
         await conversation.remove()
         return new Response("Great we saved your information", null, user)
     }],
-    notifications: [],
+    notifications: [(body, conversation, user) => {
+        const max = parseInt(body)
+        if (isNaN(max))
+            return new Response("Please give a valid number as max notifications you want to recieve.", conversation, user)
+        user.notifications.max = max
+        await conversation.remove()
+        return new Response("Great we saved your information", null, user)
+    }],
 }
