@@ -72,6 +72,24 @@ module.exports = {
         }
     ],
     exit: [],
-    distance: [],
+    distance: [(body, conversation, user) => {
+        const number = parseInt(body)
+        if (!(number == 1 || number == 2))
+            return new Response("Oops looks like you gave an invalid answer. would you like to try again?", conversation, user)
+
+        conversation.bumpFunction()
+        conversation.sessionInfo.distanceType = number
+        return new Response(`How many ${number == 1 ? "miles" : "kilometers"} would you likee to set as you limit distance`)
+
+    },
+    (body, conversation, user) => {
+        const distance = parseInt(body)
+        if (isNaN(distance))
+            return new Response("Please give a valid number as a distance.", conversation, user)
+        user.distance.type = conversation.sessionInfo.distanceType == 1 ? "ml" : "km"
+        user.distance.value = distance
+        await conversation.remove()
+        return new Response("Great we saved your information", null, user)
+    }],
     notifications: [],
 }

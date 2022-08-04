@@ -17,7 +17,8 @@ const sessionSchema = new Schema({
     sessionInfo: {
         stage: String,
         function: Number,
-        addresses: []
+        addresses: [],
+        distanceType: Number,
     }
 
 
