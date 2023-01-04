@@ -20,7 +20,7 @@ const userSchema = new Schema({
         type: {
             type: String,
             required: true,
-            defaut: "Point"
+            default: "Point"
         },
         coordinates: [{
             type: Number,
@@ -109,27 +109,8 @@ const userSchema = new Schema({
 },
     {
         methods: {
-            async sendCode(contactType) {
-                // create a six digit code
-                //hash code
-                // set expires
-                //save code to a conversation
-                // send the codeon confirmation
-            },
-            async verifyCode(code) {
-                //pull the conversation by id
-                //try to unhash the code 
-            },
-
-            async findOrg() {
-                // return org thats near this person
-            },
 
         }
-
-
-
-
     }
 )
 
