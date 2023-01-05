@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const { createEvent } = require('../controllers/org');
 const { Schema } = mongoose
+const Event = require('./event')
 
 const organizationSchema = new Schema({
     name: {
@@ -79,19 +81,28 @@ const organizationSchema = new Schema({
     }
 },
     {
-    methods: {
-        addUser(email) {
-            this.users.push(email)
-        },
-        blockUser(email) {
-            //block the email
+        methods: {
+            addUser(email) { this.users.push(email) },
+            blockUser(email) { },
+            async createEvent(body) {
+                const event = new Event(body)
+                event.organization = this
+                this.events.push(event)
+                try {
+                    await event.save().then(() => this.save())
+                    return event
+                }
+                catch (err) {
+                    return err
+                }
+            },
         }
-    }
-})
+    })
 
-organizationSchema.virtual("addDomain").set()
+// organizationSchema.virtual("addDomain").set()
 
 module.exports = mongoose.model('Organization', organizationSchema)
+
 
 
 
