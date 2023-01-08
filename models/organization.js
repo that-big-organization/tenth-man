@@ -76,7 +76,7 @@ const organizationSchema = new Schema({
     {
         methods: {
             addUser(email) { this.users.push(email) },
-            blockUser(email) { },
+            blockUser(email) { this.blocked.push(email) },
             async createEvent(body) {
                 const event = new Event(body)
                 event.organization = this

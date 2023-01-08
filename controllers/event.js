@@ -1,7 +1,12 @@
 const Event = require('../models/event')
 
 class EventCtrl {
-    static async getAllEvents(req, res, next) { }
+    static async getAllEvents(req, res, next) {
+        const { location } = req.query
+
+        // const events = await Event.find()
+
+    }
     static async eventsNearMe(req, res, next) {
         const { location } = req.query
         if (!location) res.json("Bad request")
