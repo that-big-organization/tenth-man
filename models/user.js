@@ -1,33 +1,14 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const Geo = require('../lib/geo')
+const geoType = require('./geo')
 
 const userSchema = new Schema({
     name: {
         type: String,
         required: true,
     },
-    area: {
-        type: {
-            type: String,
-            enum: ["Polygon"],
-            required: true,
-            default: "Polygon"
-        },
-        coordinates: [[[Number]]]
-    },
-    location: {
-        type: {
-            type: String,
-            required: true,
-            default: "Point"
-        },
-        coordinates: [{
-            type: Number,
-            required: true,
-        }]
-
-    },
+    geo: geoType,
     distance: {
         type: {
             type: String,
@@ -38,7 +19,7 @@ const userSchema = new Schema({
             default: 5
         }
     },
-    region: String,
+
     blocked: Boolean,
     contact: {
         email: {
@@ -109,11 +90,25 @@ const userSchema = new Schema({
 },
     {
         methods: {
+            async notify() {
+                if (this.contact.email) {
+                    //send email
+                }
+                if (this.contact.sms) {
+                    //send sms
+                }
+                if (this.contact.whatsapp) {
+                    //send whatsapp message
+                }
+            },
+            async generateGeo() {
+
+            }
+        },
+        static: {
 
         }
     }
 )
-
-
 
 module.exports = mongoose.model('User', userSchema)

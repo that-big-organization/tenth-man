@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { createEvent } = require('../controllers/org');
 const { Schema } = mongoose
 const Event = require('./event')
+const geoType = require('./geo')
 
 const organizationSchema = new Schema({
     name: {
@@ -52,15 +53,7 @@ const organizationSchema = new Schema({
 
 
     }],
-    location: {
-        type: {
-            type: String,
-            default: "Point",
-            required: true
-        },
-        coordinates: [Number]
-    },
-    region: [String],
+    geo: geoType,
     events: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'

@@ -2,27 +2,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const Geo = require('../lib/geo')
 const User = require('./user')
+const geoType = require('./geo')
 
 const eventSchema = new Schema({
-    location: {
-        type: {
-            type: String,
-            required: true,
-            default: "Point"
-        },
-        coordinates: [{
-            type: Number,
-            required: true,
-        }]
-    },
-    region: {
-        type: String,
-        required: true,
-    },
-    address: {
-        type: String,
-        required: true,
-    },
+    geo: geoType,
     date: {
         type: Date,
         required: true,
@@ -75,7 +58,7 @@ const eventSchema = new Schema({
                     },
                 }
                 const users = await User.find()
-                users.map((user) => { this.users.push({ user }) })
+                const user = users.map((user) => { this.users.push({ user }) })
             },
             async notifyUsers(increase = 3) {
                 if (this.notifiedUsers) {
