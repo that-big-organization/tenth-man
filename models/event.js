@@ -58,7 +58,7 @@ const eventSchema = new Schema({
                     },
                 }
                 const users = await User.find()
-                const user = users.map((user) => { this.users.push({ user }) })
+                users.forEach((user) => { this.users.push({ user }) })
             },
             async notifyUsers(increase = 3) {
                 if (this.notifiedUsers) {
