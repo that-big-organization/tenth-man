@@ -64,6 +64,16 @@ const eventSchema = new Schema({
     {
         methods: {
             async nearbyUsers() {
+                const query = {
+                    location: {
+                        $geoIntersects: {
+                            $geometry: {
+                                type: 'Point',
+                                coordinates: [lng, lat],
+                            },
+                        },
+                    },
+                }
                 const users = await User.find()
                 users.map((user) => { this.users.push({ user }) })
             },
@@ -81,11 +91,12 @@ const eventSchema = new Schema({
 )
 
 eventSchema.virtual("attendingUsers").get(() => { this.users.map((user) => { if (user.attending) return user }) })
-eventSchema.pre('save', async () => {
-    await this.nearbyUsers()
-})
-eventSchema.post('save', async () => {
-    await this.notifyUsers
-})
+// eventSchema.pre('save', async () => {
+//     await this.nearbyUsers()
+// })
+// eventSchema.post('save', async () => {
+
+//     await this.notifyUsers()
+// })
 
 module.exports = mongoose.model('Event', eventSchema)
