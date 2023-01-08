@@ -6,6 +6,7 @@ class OrgCtrl {
     static async createOrg(req, res, next) {
         const { body } = req;
         const org = new Org(body)
+
         try {
             await org.save()
             res.json(org)
@@ -47,11 +48,22 @@ class OrgCtrl {
         res.send(`Org ${id} was deleted`)
     }
     static async getEvents(req, res, next) {
+        const { id } = req.params
+        const events = await Org.findById(id, ["events", "-_id"]).populate("events")
+        res.json(events)
+
     }
     static async createEvent(req, res, next) {
         const { body } = req
-        const event = new Event(body)
-        await event.save()
+        const { id } = req.params
+        const org = await Org.findById(id)
+        if (!org) {
+            res.json("Organization not found")
+            return
+        }
+        const event = await org.createEvent(body)
+        console.log(event)
+        res.json(event)
     }
     static async getEvent(req, res, next) {
         const { id } = req.params
@@ -69,14 +81,31 @@ class OrgCtrl {
         const { body } = req.body
         const event = await Event.findByIdAndUpdate(body, { new: true })
         await event.save()
-        res
+        res.json(event)
     }
     static async deleteOrg(req, res, next) {
         const { id } = req.params
         const org = await Org.findByIdAndDelete(id)
         res.json(`Account ${id} has been deleted`)
     }
-    static async orgNearMe(req, res, next) { }
+    static async orgNearMe(req, res, next) {
+        const { location } = req.query
+        if (!location) res.json("Bad request")
+        const [lat, lng] = location.split(",")
+        const query = {
+            location: {
+                $geoIntersects: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat],
+                    },
+                },
+            },
+        }
+        const orgs = await Org.find(query).populate("organization")
+
+        res.send(orgs)
+    }
     static async getAllOrg(req, res, next) { }
 
 }
