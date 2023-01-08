@@ -1,9 +1,16 @@
 const User = require('../models/user')
+const Geo = require('../lib/geo')
 
 class UserCtrl {
     static async register(req, res, next) {
         const { body } = req
-        const user = new User(body.user)
+        const { geo } = body
+        if (!geo.location && geo.address) {
+            const result = await Geo.getLocation(geo.address)
+            if (result[0]) body.geo = result[0]
+            body.geo = result
+        }
+        const user = new User(body)
         try {
             await user.save()
             res.json(user)
@@ -12,7 +19,6 @@ class UserCtrl {
             console.log(err)
             res.json({ error: "Unable to create user" })
         }
-
     }
     static async login(req, res, next) { }
     static async logout(req, res, next) { }
