@@ -9,7 +9,7 @@ router.route('/logout')
 router.route('/near-me').get(OrgCtrl.orgNearMe)
 router.route('/:id').get(OrgCtrl.getOrg).put(OrgCtrl.updateOrg).delete(OrgCtrl.deleteOrg)
 router.route('/:id/events').get(OrgCtrl.getEvents).post(OrgCtrl.createEvent)
-router.route('/:id/events/:event').get(OrgCtrl.getEvent).post(OrgCtrl.eventForm).put(OrgCtrl.editEvent).delete(OrgCtrl.deleteOrg)
+router.route('/:id/events/:event').get(OrgCtrl.getEvent).put(OrgCtrl.editEvent).delete(OrgCtrl.deleteOrg)
 
 
 module.exports = router
