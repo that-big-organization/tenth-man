@@ -21,7 +21,11 @@ class EventCtrl {
         res.send(events)
 
     }
-    static async forwardToOrg(req, res, next) { }
+    static async forwardToOrg(req, res, next) {
+        const { id } = req.params
+        const orgID = await Event.findById(id, "organization")
+        res.json(`go to ${orgID}`)
+    }
 }
 
 module.exports = EventCtrl;
