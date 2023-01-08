@@ -6,7 +6,6 @@ class OrgCtrl {
     static async createOrg(req, res, next) {
         const { body } = req;
         const org = new Org(body)
-
         try {
             await org.save()
             res.json(org)
@@ -70,12 +69,6 @@ class OrgCtrl {
         const event = await Event.findById(id)
         res.json(event)
 
-    }
-    static async eventForm(req, res, next) {
-        // send email
-    }
-    static async orgForm(req, res, next) {
-        // send email
     }
     static async editEvent(req, res, next) {
         const { body } = req.body
