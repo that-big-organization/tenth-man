@@ -9,9 +9,6 @@ router.route("/login").post(UserCtrl.generateLoginCode)
 // router.route("/logout").post(UserCtrl.logout)
 router.route("/delete").delete(UserCtrl.delete)
 router.route("/update-preferences").put(UserCtrl.save)
-// router.route('verify')
-//     .get(UserCtrl.createCode)
-//     .post(UserCtrl.validateCode)
 
 
 
