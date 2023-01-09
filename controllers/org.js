@@ -1,24 +1,30 @@
 const Org = require('../models/organization')
 const Event = require('../models/event')
+const Geo = require('../lib/geo')
 
 
 class OrgCtrl {
     static async createOrg(req, res, next) {
         const { body } = req;
-        const org = new Org(body)
+        const { geo } = body
         try {
+            if (!geo.location && geo.address) {
+                const result = await Geo.getLocation(geo.address)
+                if (result[0]) body.geo = result[0]
+                body.geo = result
+            }
+            const org = new Org(body)
             await org.save()
             res.json(org)
         }
         catch (err) {
-            res.json(err)
+            console.log(err)
+            res.json("Hi")
         }
     }
     static async getOrg(req, res, next) {
         const { id } = req.params
-        console.log(id)
         const org = await Org.findById(id)
-
         if (!org)
             res.json("Not Found")
         else
@@ -26,10 +32,8 @@ class OrgCtrl {
     }
     static async updateOrg(req, res, next) {
         const { id } = req.params
-        console.log(id)
         const { body } = req
         const org = await Org.findByIdAndUpdate(id, body, { new: true })
-
         try {
             await org.save()
             res.json(org)
