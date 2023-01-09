@@ -20,18 +20,27 @@ class UserCtrl {
             res.json({ error: "Unable to create user" })
         }
     }
-    static async login(req, res, next) { }
-    static async logout(req, res, next) { }
+    static async getUser(req, res, next) {
+        const { id } = req.params
+        try {
+            const user = await User.findById(id)
+            if (!user) { res.json({ status: 404 }) }
+            else {
+                res.json(user)
+            }
+        } catch (err) {
+            res.json(err)
+        }
+    }
     static async delete(req, res, next) {
-        const { id } = req.query
+        const { id } = req.params
         console.log(`Deleteing ${id}`)
         const user = await User.findByIdAndDelete(id)
         console.log(user)
         res.send(`User ${id} was deleted`)
     }
     static async save(req, res, next) {
-        const { id } = req.query
-        console.log(id)
+        const { id } = req.params
         const { body } = req
         console.log(body)
         const user = await User.findByIdAndUpdate(id, body, { new: true })
