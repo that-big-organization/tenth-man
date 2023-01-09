@@ -34,17 +34,13 @@ class UserCtrl {
     }
     static async delete(req, res, next) {
         const { id } = req.params
-        console.log(`Deleteing ${id}`)
         const user = await User.findByIdAndDelete(id)
-        console.log(user)
         res.send(`User ${id} was deleted`)
     }
     static async save(req, res, next) {
         const { id } = req.params
         const { body } = req
-        console.log(body)
         const user = await User.findByIdAndUpdate(id, body, { new: true })
-
         try {
             await user.save()
             res.json(user)
