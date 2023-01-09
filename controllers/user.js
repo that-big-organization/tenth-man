@@ -34,8 +34,13 @@ class UserCtrl {
     }
     static async delete(req, res, next) {
         const { id } = req.params
-        const user = await User.findByIdAndDelete(id)
-        res.send(`User ${id} was deleted`)
+        try {
+            await User.findByIdAndDelete(id)
+            res.send(`User ${id} was deleted`)
+        } catch (err) {
+            console.log(err)
+            res.json("unable to delete user.")
+        }
     }
     static async save(req, res, next) {
         const { id } = req.params
