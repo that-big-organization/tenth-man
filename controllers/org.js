@@ -12,6 +12,7 @@ class OrgCtrl {
                 const result = await Geo.getLocation(geo.address)
                 if (result[0]) body.geo = result[0]
                 body.geo = result
+                delete body.geo.area
             }
             const org = new Org(body)
             await org.save()
@@ -30,6 +31,16 @@ class OrgCtrl {
         else
             res.json(org)
     }
+    static async deleteOrg(req, res, next) {
+        const { id } = req.params
+        try {
+            await Org.findByIdAndDelete(id)
+            res.send(`Organization ${id} was deleted`)
+        } catch (err) {
+            console.log(err)
+            res.json("unable to delete org.")
+        }
+    }
     static async updateOrg(req, res, next) {
         const { id } = req.params
         const { body } = req
@@ -43,30 +54,42 @@ class OrgCtrl {
             res.send(err)
         }
     }
-    static async deleteOrg(req, res, next) {
-        const { id } = req.query
-        console.log(`Deleteing ${id}`)
-        const org = await org.findByIdAndDelete(id)
-        console.log(org)
-        res.send(`Org ${id} was deleted`)
-    }
-    static async getEvents(req, res, next) {
-        const { id } = req.params
-        const events = await Org.findById(id, ["events", "-_id"]).populate("events")
-        res.json(events)
-
-    }
     static async createEvent(req, res, next) {
         const { body } = req
+        const { geo } = body
         const { id } = req.params
+        try {
+            if (!geo.location && geo.address) {
+                const result = await Geo.getLocation(geo.address)
+                if (result[0]) body.geo = result[0]
+                body.geo = result
+                delete body.geo.area
+            }
+        } catch (err) {
+            console.log(err)
+            res.json("no Geo")
+            return
+        }
         const org = await Org.findById(id)
         if (!org) {
             res.json("Organization not found")
             return
         }
-        const event = await org.createEvent(body)
-        console.log(event)
-        res.json(event)
+        try {
+            const event = await org.createEvent(body)
+            res.json(event)
+        }
+        catch (err) {
+            res.json("Error")
+            console.log(err)
+        }
+
+    }
+    static async getEvents(req, res, next) {
+        const { id } = req.params
+        const events = await Org.findById(id).then(org => org.getEvents()).catch(err => (err))
+        if (!events[0]) return res.json("err")
+        res.json(events)
     }
     static async getEvent(req, res, next) {
         const { id } = req.params
