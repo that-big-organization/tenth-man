@@ -7,21 +7,14 @@ class OrgCtrl {
     static async createOrg(req, res, next) {
         const { body } = req;
         const { geo } = body
-        try {
-            if (!geo.location && geo.address) {
-                const result = await Geo.getLocation(geo.address)
+        const org = await Geo.getLocation(geo.address)
+            .then(result => {
                 if (result[0]) body.geo = result[0]
-                body.geo = result
-                delete body.geo.area
-            }
-            const org = new Org(body)
-            await org.save()
-            res.json(org)
-        }
-        catch (err) {
-            console.log(err)
-            res.json("Hi")
-        }
+                else body.geo
+                return new Org(body).save()
+            })
+            .catch(err => null)
+        res.json(org)
     }
     static async getOrg(req, res, next) {
         const { id } = req.params
@@ -58,31 +51,22 @@ class OrgCtrl {
         const { body } = req
         const { geo } = body
         const { id } = req.params
-        try {
-            if (!geo.location && geo.address) {
-                const result = await Geo.getLocation(geo.address)
-                if (result[0]) body.geo = result[0]
-                body.geo = result
-                delete body.geo.area
-            }
-        } catch (err) {
-            console.log(err)
-            res.json("no Geo")
-            return
-        }
         const org = await Org.findById(id)
         if (!org) {
             res.json("Organization not found")
             return
         }
-        try {
-            const event = await org.createEvent(body)
-            res.json(event)
-        }
-        catch (err) {
-            res.json("Error")
-            console.log(err)
-        }
+        const event = await Geo.getLocation(geo.address)
+            .then(result => {
+                result = { ...result }
+                delete result.area
+                cconsole.log(result)
+                if (result[0]) body.geo = result[0]
+                else body.geo
+                return org.createEvent(body)
+            })
+            .catch(err => null)
+        res.json(event)
 
     }
     static async getEvents(req, res, next) {

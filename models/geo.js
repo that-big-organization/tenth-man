@@ -16,10 +16,10 @@ const geoType = new mongoose.Schema({
         type: {
             type: String,
             enum: ["Polygon"],
-            required: true,
+            required: false,
             default: "Polygon"
         },
-        coordinates: [[[Number]]]
+        coordinates: [[[{ type: Number, required: false }]]]
     },
     region: String,
     address: String,
