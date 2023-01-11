@@ -6,11 +6,11 @@ class UserCtrl {
         const { body } = req
         const { geo } = body
 
-        const user = await Geo.getLocation(geo.address)
+        const user = await Geo.getLocation(geo)
             .then(result => {
                 const u = new User(body)
-                if (result[0]) u.geo = result[0]
-                else u.geo = result
+                if (result[0]) u.geo = result[0].setArea()
+                else u.geo = result.setArea()
                 return u.save()
             })
             .catch(err => null)
