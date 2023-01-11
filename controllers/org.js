@@ -7,7 +7,7 @@ class OrgCtrl {
     static async createOrg(req, res, next) {
         const { body } = req;
         const { geo } = body
-        const org = await Geo.getLocation(geo)
+        const org = await Geo.getCoordinates(geo)
             .then(result => {
                 if (result[0]) body.geo = result[0]
                 else body.geo = result
@@ -56,7 +56,7 @@ class OrgCtrl {
             res.json("Organization not found")
             return
         }
-        const event = await Geo.getLocation(geo)
+        const event = await Geo.getCoordinates(geo)
             .then(result => {
                 if (result[0]) body.geo = result[0]
                 else body.geo = result

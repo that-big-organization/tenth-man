@@ -6,14 +6,17 @@ class UserCtrl {
         const { body } = req
         const { geo } = body
 
-        const user = await Geo.getLocation(geo)
+        const user = await Geo.getCoordinates(geo)
             .then(result => {
                 const u = new User(body)
                 if (result[0]) u.geo = result[0].setArea()
                 else u.geo = result.setArea()
                 return u.save()
             })
-            .catch(err => null)
+            .catch(err => {
+                console.log(err)
+                return null
+            })
         res.json(user)
     }
     static async getUser(req, res, next) {
