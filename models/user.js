@@ -1,7 +1,17 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const Geo = require('../lib/geo')
-const geoType = require('./geo')
+const GT = require('./geo')
+
+const area = {
+    type: {
+        type: String,
+        enum: ["Polygon"],
+        required: false,
+    },
+    coordinates: [[[Number]]]
+}
+const geoType = GT.clone().add({ area })
 
 const userSchema = new Schema({
     name: {
