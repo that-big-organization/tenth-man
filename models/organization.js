@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { createEvent } = require('../controllers/org');
 const { Schema } = mongoose
 const Event = require('./event')
 const geoType = require('./geo')
@@ -54,10 +53,6 @@ const organizationSchema = new Schema({
 
     }],
     geo: geoType,
-    events: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Event'
-    }],
     owner: {
         type: String,
         required: true,
@@ -80,15 +75,11 @@ const organizationSchema = new Schema({
             async createEvent(body) {
                 const event = new Event(body)
                 event.organization = this
-                this.events.push(event)
-                try {
-                    await event.save().then(() => this.save())
-                    return event
-                }
-                catch (err) {
-                    return err
-                }
+                return event.save()
             },
+            async getEvents() {
+                return Event.find({ organization: this })
+            }
         }
     })
 
