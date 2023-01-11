@@ -5,20 +5,16 @@ class UserCtrl {
     static async register(req, res, next) {
         const { body } = req
         const { geo } = body
-        if (!geo.location && geo.address) {
-            const result = await Geo.getLocation(geo.address)
-            if (result[0]) body.geo = result[0]
-            body.geo = result
-        }
-        const user = new User(body)
-        try {
-            await user.save()
-            res.json(user)
-        }
-        catch (err) {
-            console.log(err)
-            res.json({ error: "Unable to create user" })
-        }
+
+        const user = await Geo.getLocation(geo.address)
+            .then(result => {
+                const u = new User(body)
+                if (result[0]) u.geo = result[0]
+                else u.geo = result
+                return u.save()
+            })
+            .catch(err => null)
+        res.json(user)
     }
     static async getUser(req, res, next) {
         const { id } = req.params
